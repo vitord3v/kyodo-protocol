@@ -1,8 +1,10 @@
+import React from "react"
 import '../styles/globals.scss'
 import Image from 'next/image'
 import { AccountProvider, useAccount} from "../contexts/AccountContext";
+import { ConnectWalletButton } from "../components/ConnectWalletButton/ConnectWalletButton"
 
-import React from "react"
+
 
 function formatAddress(address) {
   if (!address) return '';
@@ -10,6 +12,23 @@ function formatAddress(address) {
   const end = address.substring(address.length - 4);
   return `${start}...${end}`;
 }
+
+function PageContent({ Component, pageProps }) {
+  const { account } = useAccount();
+
+  return (
+    <>
+      {account ? (
+        <Component {...pageProps} />
+      ) : (
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 'calc(100vh - 60px)' }}>
+          <ConnectWalletButton />
+        </div>
+      )}
+    </>
+  );
+}
+
 
 function Header() {
   const { account } = useAccount();
@@ -59,7 +78,7 @@ function MyApp({ Component, pageProps }) {
   return (
     <AccountProvider>
       <Header />
-      <Component {...pageProps} />
+      <PageContent Component={Component} pageProps={pageProps} />
       <footer>
         <div className={"holder"}>
           <p>
